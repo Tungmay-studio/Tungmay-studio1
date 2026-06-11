@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TungMay Studio - Offline Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Noto+Sans+Thai:wght@300;400;500;600&amp;display=swap');
+        
+        body {
+            font-family: 'Inter', 'Noto Sans Thai', system_ui, sans-serif;
+            background: linear-gradient(135deg, #451a03 0%, #78350f 40%, #92400e 100%);
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+        
+        .section-header {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #334155;
+        }
+        
+        .form-input {
+            background-color: #ffffff;
+            border: 1px solid #fcd34d;
+            color: #334155;
+        }
+        
+        .form-input:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+            outline: none;
+        }
+        
+        .offline-warning {
+            background: linear-gradient(to right, #431407, #7c2d12);
+            color: #fed7aa;
+        }
+        
+        .prompt-card {
+            background: white;
+            border: 1px solid #fcd34d;
+            transition: all 0.3s ease;
+        }
+        
+        .prompt-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+        
+        .step-number {
+            background: linear-gradient(to right, #d97706, #b45309);
+            color: white;
+        }
+        
+        .main-button {
+            background: linear-gradient(to right, #d97706, #b45309);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .main-button:hover {
+            transform: translateY(-2px) scale(1.015);
+            box-shadow: 0 10px 30px -5px rgb(245 158 11 / 0.6), 0 10px 10px -6px rgb(245 158 11 / 0.5);
+        }
+        
+        .main-button:active {
+            transform: scale(0.985);
+        }
+        
+        .main-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -150%;
+            width: 60%;
+            height: 250%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.45),
+                transparent
+            );
+            transition: 0.7s;
+            pointer-events: none;
+        }
+        
+        .main-button:hover::after {
+            left: 300%;
+        }
+        
+        .glow-gold {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+    <!-- Header -->
+    <div class="border-b border-amber-900/40 bg-white/95 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-amber-600 to-yellow-700 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-robot text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight text-slate-800">TungMay Studio</h1>
+                    <p class="text-xs text-slate-500 -mt-1">Offline Edition • เวอร์ชันออฟไลน์</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-x-2">
+                <div class="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-xs flex items-center gap-x-2">
+                    <i class="fa-solid fa-wifi-slash"></i>
+                    <span>ออฟไลน์ 100%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Offline Warning -->
+    <div class="max-w-7xl mx-auto px-6 pt-4">
+        <div class="offline-warning rounded-2xl px-5 py-3 flex items-start gap-x-3">
+            <i class="fa-solid fa-exclamation-triangle text-xl mt-0.5"></i>
+            <div class="text-sm">
+                <strong class="font-semibold">สำคัญสำหรับการใช้งานออฟไลน์ 100%:</strong><br>
+                กรุณาเปิดไฟล์นี้ <strong>ครั้งแรกที่บ้าน</strong> (ต้องมีอินเทอร์เน็ต) ก่อน อย่างน้อย 1-2 นาที เพื่อให้ระบบโหลดสไตล์ให้ครบ<br>
+                หลังจากนั้นไฟล์จะถูกบันทึกในเบราว์เซอร์ และสามารถใช้งานได้แบบออฟไลน์ 100% ที่ทำงาน
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left Column -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Product Info -->
+                <div class="glass rounded-2xl p-6 border border-amber-200">
+                    <div class="flex items-center gap-x-2 mb-4">
+                        <i class="fa-solid fa-box text-amber-600"></i>
+                        <h2 class="section-header">ข้อมูลสินค้า</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm text-slate-600">ชื่อสินค้า *</label>
+                            <input id="productName" type="text" class="form-input mt-1 w-full px-4 py-2.5 rounded-xl text-sm" placeholder="ร่มพับ UV พกพาสะดวก">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-sm text-slate-600">ราคา</label>
+                                <input id="price" type="number" class="form-input mt-1 w-full px-4 py-2.5 rounded-xl text-sm" placeholder="299">
+                            </div>
+                            <div>
+                                <label class="text-sm text-slate-600">ความยาวคลิป</label>
+                                <select id="videoLength" class="form-input mt-1 w-full px-4 py-2.5 rounded-xl text-sm">
+                                    <option value="15">15 วินาที</option>
+                                    <option value="30" selected>30 วินาที</option>
+                                    <option value="60">60 วินาที</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm text-slate-600">คำอธิบาย / จุดเด่น</label>
+                            <textarea id="description" rows="2" class="form-input mt-1 w-full px-4 py-2.5 rounded-xl text-sm" placeholder="กันน้ำดี พกพาง่าย ราคาถูก"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Upload + Vision -->
+                <div class="glass rounded-2xl p-6 border border-amber-200">
+                    <div class="flex items-center gap-x-2 mb-4">
+                        <i class="fa-solid fa-image text-amber-600"></i>
+                        <h2 class="section-header">อัพโหลดรูป + วิเคราะห์ด้วย AI</h2>
+                    </div>
+                    
+                    <div onclick="document.getElementById('imageUpload').click()" 
+                         class="border-2 border-dashed border-amber-300 hover:border-amber-400 transition-colors rounded-2xl p-6 text-center cursor-pointer mb-4">
+                        <i class="fa-solid fa-cloud-upload-alt text-3xl text-amber-400 mb-2"></i>
+                        <p class="text-sm text-slate-600">คลิกหรือลากรูปมาวางที่นี่</p>
+                        <p class="text-xs text-slate-500">รองรับหลายรูป</p>
+                        <input type="file" id="imageUpload" multiple accept="image/*" class="hidden" onchange="handleImageUpload(this)">
+                        <div id="imagePreview" class="mt-4 flex flex-wrap gap-3 justify-center"></div>
+                    </div>
+                    
+                    <button onclick="generateVisionPrompt()" 
+                            class="w-full flex items-center justify-center gap-x-2 bg-amber-600 hover:bg-amber-700 transition-colors text-white text-sm font-medium py-2.5 rounded-xl">
+                        <i class="fa-solid fa-magic"></i>
+                        <span>วิเคราะห์รูปด้วย Grok Vision</span>
+                    </button>
+                    
+                    <div class="mt-4">
+                        <label class="text-sm text-slate-600">วางผลการวิเคราะห์จาก Grok ที่นี่</label>
+                        <textarea id="visionResult" rows="2" class="form-input mt-1 w-full px-4 py-2.5 rounded-xl text-sm" placeholder="ผลวิเคราะห์จาก Grok..."></textarea>
+                        <button onclick="applyVisionToPrompts()" 
+                                class="mt-2 w-full text-xs bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-xl flex items-center justify-center gap-x-2">
+                            <i class="fa-solid fa-sync"></i>
+                            <span>นำผลไปปรับ Prompt อัตโนมัติ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scene & Style -->
+                <div class="glass rounded-2xl p-6 border border-amber-200">
+                    <div class="flex items-center gap-x-2 mb-4">
+                        <i class="fa-solid fa-palette text-amber-600"></i>
+                        <h2 class="section-header">ฉากและสไตล์</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm text-slate-600">สถานที่ / บรรยากาศ / ฉาก *</label>
+                            <input id="scene" type="text" class="form-input mt-1 w-full px-4 py-2.5 rounded-xl text-sm" placeholder="ห้องครัวมินิมอล แสงธรรมชาติ">
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm text-slate-600">เสื้อผ้า / สไตล์พรีเซนเตอร์</label>
+                            <input id="outfit" type="text" class="form-input mt-1 w-full px-4 py-2.5 rounded-xl text-sm" placeholder="เสื้อยืด oversize สีขาว">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-sm text-slate-600">เพศพรีเซนเตอร์</label>
+                                <select id="gender" class="form-input mt-1 w-full px-4 py-2.5 rounded-xl text-sm">
+                                    <option value="หญิง">หญิง</option>
+                                    <option value="ชาย">ชาย</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-sm text-slate-600">อายุ</label>
+                                <input id="age" type="text" class="form-input mt-1 w-full px-4 py-2.5 rounded-xl text-sm" placeholder="24-28 ปี">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm text-slate-600">สไตล์ภาพ</label>
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                <label class="cursor-pointer"><input type="radio" name="imageStyle" value="Realistic" checked class="hidden"><span class="px-3 py-1 text-xs bg-amber-100 text-amber-700 rounded-full border border-amber-300">Realistic</span></label>
+                                <label class="cursor-pointer"><input type="radio" name="imageStyle" value="Cinematic" class="hidden"><span class="px-3 py-1 text-xs bg-amber-100 text-amber-700 rounded-full border border-amber-300">Cinematic</span></label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm text-slate-600">สไตล์คลิป</label>
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                <label class="cursor-pointer"><input type="radio" name="contentStyle" value="Soft Sell" checked class="hidden"><span class="px-3 py-1 text-xs bg-amber-100 text-amber-700 rounded-full border border-amber-300">Soft Sell</span></label>
+                                <label class="cursor-pointer"><input type="radio" name="contentStyle" value="ASMR" class="hidden"><span class="px-3 py-1 text-xs bg-amber-100 text-amber-700 rounded-full border border-amber-300">ASMR</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="generateAllPrompts()" 
+                        class="main-button w-full text-white py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-x-3 shadow-xl glow-gold">
+                    <i class="fa-solid fa-magic"></i>
+                    <span>สร้าง Prompt ทั้ง 6 ขั้นตอน</span>
+                </button>
+            </div>
+
+            <!-- Right Column -->
+            <div class="lg:col-span-7">
+                <div class="glass rounded-2xl p-6 border border-amber-200 h-full">
+                    <div class="flex items-center justify-between mb-5">
+                        <h2 class="section-header flex items-center gap-x-2">
+                            <i class="fa-solid fa-list-check text-amber-600"></i> 
+                            ผลลัพธ์ 6 ขั้นตอน
+                        </h2>
+                        <button onclick="copyAllResults()" class="text-xs px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg flex items-center gap-x-1.5">
+                            <i class="fa-solid fa-copy"></i>
+                            <span>คัดลอกทั้งหมด</span>
+                        </button>
+                    </div>
+                    
+                    <div id="resultsContainer" class="space-y-3 text-sm">
+                        <div class="text-center py-16 text-slate-400">
+                            <i class="fa-solid fa-magic text-4xl mb-4 opacity-40"></i>
+                            <p>กรอกข้อมูลด้านซ้ายแล้วกดปุ่ม<br>“สร้าง Prompt ทั้ง 6 ขั้นตอน”</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <script>
+        let uploadedImages = [];
+
+        function handleImageUpload(input) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            uploadedImages = [];
+
+            if (input.files.length === 0) return;
+
+            Array.from(input.files).forEach((file, idx) => {
+                uploadedImages.push(file);
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.className = 'relative group w-16 h-16';
+                    div.innerHTML = `
+                        <img src="${e.target.result}" class="w-full h-full object-cover rounded-xl border border-amber-200">
+                        <button onclick="removeUploadedImage(${idx}, this)" 
+                                class="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100">×</button>
+                    `;
+                    preview.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function removeUploadedImage(index, btn) {
+            uploadedImages.splice(index, 1);
+            btn.parentElement.remove();
+        }
+
+        function generateVisionPrompt() {
+            const productName = document.getElementById('productName').value || 'สินค้า';
+            const prompt = `คุณคือผู้เชี่ยวชาญวิเคราะห์ภาพสินค้าสำหรับทำคลิป TikTok Affiliate\n\n` +
+                          `กรุณาวิเคราะห์รูปสินค้าที่ฉันอัพโหลดนี้:\n` +
+                          `- ชื่อสินค้า: ${productName}\n` +
+                          `- จุดเด่นที่เห็นได้ชัดจากรูป\n` +
+                          `- บรรยากาศ / สถานที่ที่เหมาะสมในการถ่ายคลิป\n` +
+                          `- สีสันและสไตล์ที่เด่น\n` +
+                          `- คำแนะนำสไตล์พรีเซนเตอร์และฉาก\n\n` +
+                          `ตอบเป็นภาษาไทย ชัดเจน เป็น bullet points`;
+
+            navigator.clipboard.writeText(prompt).then(() => {
+                alert('Prompt วิเคราะห์รูปถูกคัดลอกแล้ว!\nนำไปวางใน Grok + อัพรูปสินค้าของคุณ');
+            });
+        }
+
+        function applyVisionToPrompts() {
+            const visionText = document.getElementById('visionResult').value.trim();
+            if (!visionText) {
+                alert('กรุณาวางผลการวิเคราะห์จาก Grok ก่อน');
+                return;
+            }
+            
+            const desc = document.getElementById('description');
+            desc.value = (desc.value ? desc.value + '\n\n' : '') + 'ผลวิเคราะห์จากรูป: ' + visionText.substring(0, 300);
+            
+            alert('นำผลวิเคราะห์ไปปรับในคำอธิบายสินค้าแล้ว!');
+        }
+
+        function generateAllPrompts() {
+            const productName = document.getElementById('productName').value || 'สินค้าตัวอย่าง';
+            const price = document.getElementById('price').value || '299';
+            const description = document.getElementById('description').value || 'สินค้าคุณภาพดี';
+            const scene = document.getElementById('scene').value || 'ห้องครัวสวยงาม';
+            const outfit = document.getElementById('outfit').value || 'เสื้อยืดสีขาว';
+            const gender = document.getElementById('gender').value;
+            const age = document.getElementById('age').value || '25 ปี';
+            const videoLength = document.getElementById('videoLength').value;
+            
+            let imageStyle = 'Realistic';
+            const imgStyle = document.querySelector('input[name="imageStyle"]:checked');
+            if (imgStyle) imageStyle = imgStyle.value;
+
+            let contentStyle = 'Soft Sell';
+            const contStyle = document.querySelector('input[name="contentStyle"]:checked');
+            if (contStyle) contentStyle = contStyle.value;
+
+            const visionInsight = document.getElementById('visionResult').value.trim();
+
+            const html = `
+                <div class="prompt-card border border-amber-200 rounded-2xl p-4 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="flex items-center gap-x-2">
+                                <div class="step-number w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">1</div>
+                                <span class="font-semibold text-slate-700">ขั้นตอนที่ 1: วิเคราะห์สินค้าและกลยุทธ์</span>
+                            </div>
+                        </div>
+                        <button onclick="copyToClipboard(this)" class="text-xs px-3 py-1 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg">คัดลอก</button>
+                    </div>
+                    <pre class="mt-3 text-xs bg-amber-50 p-3 rounded-xl overflow-auto max-h-40 text-emerald-700">You are a top Thai TikTok Affiliate expert.
+
+สินค้า: ${productName}
+ราคา: ${price} บาท
+คำอธิบาย: ${description}
+${visionInsight ? 'ข้อมูลจากรูป: ' + visionInsight.substring(0, 200) : ''}
+
+วิเคราะห์เป็นภาษาไทย:
+1. จุดเด่น 5 ข้อ
+2. ปัญหาที่แก้ได้
+3. กลุ่มเป้าหมาย
+4. 5 Hook แรง
+5. โครงสร้างคลิป
+6. สไตล์ที่เหมาะสม</pre>
+                </div>
+
+                <div class="prompt-card border border-amber-200 rounded-2xl p-4 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="flex items-center gap-x-2">
+                                <div class="step-number w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">2</div>
+                                <span class="font-semibold text-slate-700">ขั้นตอนที่ 2: สร้างภาพพรีเซนเตอร์และฉาก</span>
+                            </div>
+                        </div>
+                        <button onclick="copyToClipboard(this)" class="text-xs px-3 py-1 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg">คัดลอก</button>
+                    </div>
+                    <pre class="mt-3 text-xs bg-amber-50 p-3 rounded-xl overflow-auto max-h-40 text-emerald-700">Create highly realistic Thai ${gender} age ${age}.
+
+เสื้อผ้า: ${outfit}
+สถานที่: ${scene}
+สไตล์ภาพ: ${imageStyle}, ultra realistic, 8k, natural lighting</pre>
+                </div>
+
+                <div class="prompt-card border border-amber-200 rounded-2xl p-4 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="flex items-center gap-x-2">
+                                <div class="step-number w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">3</div>
+                                <span class="font-semibold text-slate-700">ขั้นตอนที่ 3: สคริปต์ + Video Prompt</span>
+                            </div>
+                        </div>
+                        <button onclick="copyToClipboard(this)" class="text-xs px-3 py-1 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg">คัดลอก</button>
+                    </div>
+                    <pre class="mt-3 text-xs bg-amber-50 p-3 rounded-xl overflow-auto max-h-40 text-emerald-700">เขียนสคริปต์ ${videoLength} วินาที สไตล์ ${contentStyle} เป็นภาษาไทย
+
+โครงสร้าง: Hook → Problem → Solution → CTA
+
+จากนั้นสร้าง Video Prompt ละเอียดสำหรับ Runway/Kling</pre>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="prompt-card border border-amber-200 rounded-2xl p-4 shadow-sm text-xs">
+                        <div class="flex justify-between">
+                            <span class="font-semibold text-slate-700">ขั้นตอนที่ 4: เสียงพากย์</span>
+                            <button onclick="copyToClipboard(this)" class="text-xs px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded">คัดลอก</button>
+                        </div>
+                        <pre class="mt-2 text-emerald-700">ปรับสคริปต์ให้พูดไหลลื่น เป็นธรรมชาติ น่ารัก เหมือนคนไทยพูดจริง</pre>
+                    </div>
+                    <div class="prompt-card border border-amber-200 rounded-2xl p-4 shadow-sm text-xs">
+                        <div class="flex justify-between">
+                            <span class="font-semibold text-slate-700">ขั้นตอนที่ 5: ตัดต่อ</span>
+                            <button onclick="copyToClipboard(this)" class="text-xs px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded">คัดลอก</button>
+                        </div>
+                        <pre class="mt-2 text-emerald-700">ใช้ CapCut + Text Overlay + Trend Sound</pre>
+                    </div>
+                    <div class="prompt-card border border-amber-200 rounded-2xl p-4 shadow-sm text-xs">
+                        <div class="flex justify-between">
+                            <span class="font-semibold text-slate-700">ขั้นตอนที่ 6: ตรวจสอบ</span>
+                            <button onclick="copyToClipboard(this)" class="text-xs px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded">คัดลอก</button>
+                        </div>
+                        <pre class="mt-2 text-emerald-700">ให้คะแนนไวรัล 1-10 + แนะนำปรับปรุง</pre>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('resultsContainer').innerHTML = html;
+            document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyToClipboard(btn) {
+            const pre = btn.parentElement.parentElement.querySelector('pre');
+            if (!pre) return;
+            
+            navigator.clipboard.writeText(pre.innerText).then(() => {
+                const original = btn.innerHTML;
+                btn.innerHTML = '✓ คัดลอกแล้ว';
+                setTimeout(() => btn.innerHTML = original, 1800);
+            });
+        }
+
+        function copyAllResults() {
+            const pres = document.querySelectorAll('#resultsContainer pre');
+            let text = '';
+            pres.forEach((p, i) => text += `=== ขั้นตอนที่ ${i+1} ===\n${p.innerText}\n\n`);
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('คัดลอก Prompt ทั้งหมดแล้ว!');
+            });
+        }
+
+        function resetAll() {
+            document.querySelectorAll('input, textarea, select').forEach(el => el.value = '');
+            document.getElementById('imagePreview').innerHTML = '';
+            uploadedImages = [];
+            document.getElementById('resultsContainer').innerHTML = `
+                <div class="text-center py-16 text-slate-400">
+                    <i class="fa-solid fa-magic text-4xl mb-4 opacity-40"></i>
+                    <p>กรอกข้อมูลด้านซ้ายแล้วกดปุ่ม<br>“สร้าง Prompt ทั้ง 6 ขั้นตอน”</p>
+                </div>
+            `;
+        }
+
+        console.log('%c[TungMay Studio Offline Edition - Gold Theme] Ready for GitHub Pages.', 'color:#d97706');
+    </script>
+</body>
+</html>
